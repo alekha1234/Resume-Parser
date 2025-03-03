@@ -1,0 +1,54 @@
+name: Python CI
+
+on:
+  push:
+    branches:
+      - development
+      - main
+  pull_request:
+    branches:
+      - development
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repository
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      # Set up Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      # Install dependencies
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      # Run basic checks for development branch
+      - name: Run basic checks
+        if: github.ref == 'refs/heads/development'
+        run: |
+          # Add your basic check commands here
+          echo "Running basic checks for development branch"
+
+      # Create a release for main branch
+      - name: Create Release
+        if: github.ref == 'refs/heads/main'
+        run: |
+          # Ensure the latest changes are pulled
+          git pull origin main
+          # Create a new release tag
+          VERSION_TAG="v$(date +'%Y%m%d%H%M%S')"
+          git tag $VERSION_TAG
+          git push origin $VERSION_TAG
+          # Create a release using GitHub CLI
+          gh release create $VERSION_TAG --title "Release $VERSION_TAG" --notes "Automated release created on $(date)"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
