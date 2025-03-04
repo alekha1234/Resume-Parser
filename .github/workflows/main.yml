@@ -38,13 +38,18 @@ jobs:
           # Add your basic check commands here
           echo "Running basic checks for development branch"
 
+      # Install GitHub CLI for creating releases
+      - name: Install GitHub CLI
+        run: |
+          sudo apt-get install gh
+
       # Create a release for main branch
       - name: Create Release
         if: github.ref == 'refs/heads/main'
         run: |
           # Ensure the latest changes are pulled
           git pull origin main
-          # Create a new release tag
+          # Create a new release tag with versioning
           VERSION_TAG="v$(date +'%Y%m%d%H%M%S')"
           git tag $VERSION_TAG
           git push origin $VERSION_TAG
@@ -52,3 +57,4 @@ jobs:
           gh release create $VERSION_TAG --title "Release $VERSION_TAG" --notes "Automated release created on $(date)"
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          

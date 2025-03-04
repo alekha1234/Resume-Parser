@@ -1,5 +1,5 @@
-from setuptools import find_packages,setup
 from typing import List
+from setuptools import setup, find_packages
 
 def get_requirements() -> List[str]:
     """
@@ -28,12 +28,11 @@ def get_requirements() -> List[str]:
         print("requirements.txt file not found.")
     return requirements_list
 
-  from setuptools import setup, find_packages
-
-  setup(
-      name='Resume-Parser',
-      author='Gujuri Alekha',
-      author_email='gujurialekha@gmail.com',
-      packages=find_packages(),
-      install_requires=get_requirements()
-  )
+setup(
+    name="Resume-Parser",
+    author='Gujuri Alekha',
+    author_email='gujurialekha@gmail.com',
+    version="0.0.1",
+    packages=find_packages(),
+    install_requires=get_requirements()
+)
